@@ -12,3 +12,10 @@ def read_float(prompt: str, default: float) -> float:
     except ValueError:
         print(f"invalid input, us default value {default}")
         return default
+
+def read_int(prompt: str, default: int) -> int:
+    try:
+        return int(input(prompt))
+    except ValueError:
+        print(f"invalid input, us default value {default}")
+        return default

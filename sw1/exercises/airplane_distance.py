@@ -8,14 +8,18 @@ Created on 20.09.2025 10:44
 import math
 from typing import TypedDict
 
+from helper_functions import read_int
+
 class AirplaneLocation(TypedDict, total=True):
     x_position: int
     y_position: int
 
-position_x_plane_1: int = int(input("x position airplane 1: "))
-position_y_plane_1: int = int(input("y position airplane 1: "))
-position_x_plane_2: int = int(input("x position airplane 2: "))
-position_y_plane_2: int = int(input("y position airplane 2: "))
+default_value: int = 2
+
+position_x_plane_1: int = read_int(input("x position airplane 1: "), default_value)
+position_y_plane_1: int = read_int(input("y position airplane 1: "), default_value)
+position_x_plane_2: int = read_int(input("x position airplane 2: "), default_value)
+position_y_plane_2: int = read_int(input("y position airplane 2: "), default_value)
 
 position_airplane1: AirplaneLocation = {"x_position": position_x_plane_1, "y_position": position_y_plane_1}
 position_airplane2: AirplaneLocation = {"x_position": position_x_plane_2, "y_position": position_y_plane_2}

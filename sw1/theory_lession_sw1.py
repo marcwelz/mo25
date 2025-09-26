@@ -1,7 +1,5 @@
-import string
-
 # prints string to console
-def print_hi(name: string) -> None:
+def print_hi(name: str) -> None:
     print(f'Hi, {name}')
 
 # adds two numbers
