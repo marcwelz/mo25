@@ -6,14 +6,16 @@ Created on 20.09.2025 10:34
 @project: mo25
 """
 import sys
+from typing import Final
+
+FRICTION: Final[float] = 0.3
+GRAVITY_ACCELERATION: Final[float] = 9.81
 
 velocity: float = float(sys.argv[1])
-friction: float = 0.3
-gravity_acceleration: float = 9.81
 
 def calculate_break_distance(v: float, f: float, g: float) -> float:
     return ((v ** 2) / 2) / (f * g)
 
-break_distance: float = calculate_break_distance(velocity, friction, gravity_acceleration)
+break_distance: float = calculate_break_distance(velocity, FRICTION, GRAVITY_ACCELERATION)
 
 print(break_distance)

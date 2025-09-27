@@ -5,10 +5,13 @@ Created on 20.09.2025 11:33
 @author: marcwelz
 @project: mo25
 """
+from typing import Final
 from helper_functions import read_float
 
-liter_input: float = read_float(input("liters: "), 1.0)
-density_input: float = read_float(input("density (kg/l): "), 1.0)
+DEFAULT_VALUE: Final[float] = 1.0
+
+liter_input: float = read_float(input("liters: "), DEFAULT_VALUE)
+density_input: float = read_float(input("density (kg/l): "), DEFAULT_VALUE)
 
 def liter_to_kg(l: float, d: float) -> float:
     return l * d
