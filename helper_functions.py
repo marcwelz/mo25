@@ -11,7 +11,7 @@ def read_float(prompt: str, default: Optional[float] = None) -> float:
     if default is None:
         default = 10
     try:
-        return float(input(prompt))
+        return float(prompt)
     except ValueError:
         print(f"invalid input, us default value {default}")
         return default
@@ -20,7 +20,7 @@ def read_int(prompt: str, default: Optional[int] = None) -> int:
     if default is None:
         default = 10
     try:
-        return int(input(prompt))
+        return int(prompt)
     except ValueError:
         print(f"invalid input, us default value {default}")
         return default

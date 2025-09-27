@@ -8,7 +8,10 @@ Created on 27.09.2025 10:29
 import pylab as pl
 from matplotlib.patches import Rectangle
 
-pl.figure(figsize=(6, 6))
+resolution_x: int = 6
+resolution_y: int = 6
+
+pl.figure(figsize=(resolution_x, resolution_y)) # Pixels x 100
 ax = pl.gca()
 
 ax.add_patch(Rectangle((0, 0), 1, 1, color='red'))
