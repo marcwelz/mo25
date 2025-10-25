@@ -6,12 +6,14 @@ Created on 25.10.2025 11:17
 @project: mo25
 """
 
-alphabet:list = [chr(i) for i in range(ord('a'), ord('z') + 1)]
+alphabet:list[str] = []
+for i in range(ord('a'), ord('z') + 1):
+    alphabet.append(chr(i))
 alphabet_length: int = len(alphabet)
 
 def encript(text: str) -> str:
-    chars:list = list(text)
-    new_chars:list = []
+    chars:list[str] = list(text)
+    new_chars:list[str] = []
 
     for char in chars:
         index_of_char = alphabet.index(char)
@@ -20,8 +22,8 @@ def encript(text: str) -> str:
     return ''.join(new_chars)
 
 def decript(text: str) -> str:
-    chars: list = list(text)
-    new_chars: list = []
+    chars:list[str] = list(text)
+    new_chars:list[str] = []
 
     for char in chars:
         index_of_char = alphabet.index(char)
