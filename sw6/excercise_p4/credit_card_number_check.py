@@ -16,14 +16,10 @@ def check_if_credit_card_number_is_valid(credit_card_number:str) -> bool:
 
     for index, char in enumerate(chars):
         if index == 4 or index == 9 or index == 14 or index == 19:
-            if char == ' ':
-                continue
-            else:
+            if char != ' ':
                 return False
         else:
-            if char.isdigit():
-                continue
-            else:
+            if not char.isdigit():
                 return False
 
     sum_total: int = 0
