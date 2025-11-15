@@ -20,7 +20,7 @@ trail_list: list[tuple[float, float]] = [(1, 1), (2, 1), (1, 2), (1, 1)]
 def path_length(trail: list[tuple[float, float]]) -> float:
     total_length: float = 0
 
-    for index in range(1, len(trail) - 1):
+    for index in range(1, len(trail)):
         total_length += math.sqrt(
             ((trail[index][0] - trail[index - 1][0]) ** 2) + ((trail[index][1] - trail[index - 1][1]) ** 2))
 
