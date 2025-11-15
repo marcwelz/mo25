@@ -72,7 +72,7 @@ for row in matrix_list:
 
 print(current_val_1, current_val_2, current_val_3, current_val_4, product_of_values, orientation)
 
-matrix_transposed = [list(row) for row in zip(*matrix_list)]
+matrix_transposed: list[list[int]] = [list(row) for row in zip(*matrix_list)]
 
 for row in matrix_transposed:
     tmp_product_of_values: int = 0
@@ -151,20 +151,3 @@ for row_index, row in enumerate(matrix_transposed):
 
 
 print(current_val_1, current_val_2, current_val_3, current_val_4, product_of_values, orientation)
-
-
-"""
-matrix_list_raw: list[str] = matrix.split(' ')
-matrix_list: list[int] = []
-matrix_row: list[int] = []
-
-for index, matrix in enumerate(matrix_list_raw):
-    if index % 19 == 0 and index != 0:
-        matrix_row.append(int(matrix))
-        matrix_list.append(matrix_row)
-        matrix_row = []
-    else:
-        matrix_row.append(int(matrix))
-
-print(matrix_list)
-"""
