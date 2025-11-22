@@ -65,9 +65,6 @@ battle_board = init_battle_ships(battle_board, 3)
 game_circles: int = 0
 correct_guesses: int = 0
 
-for row in battle_board:
-    print(*row)
-
 while game_circles <= 10:
     user_input = input(str(game_circles + 1) + ". Try: Guess position: ")
     coordinates: list[int] = []
