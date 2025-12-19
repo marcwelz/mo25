@@ -1,0 +1,10 @@
+{
+    "Front seats": 2.30,
+    "Rear seats": 3.25,
+    "Std baggage compartment": 3.65,
+    "Baggage tube": 4.32,
+    "Usable fuel": 2.63,
+	"Empty distance": 2.47,
+    "Maximum Weight": 1280,
+    "Empty Moment": 2180.8
+}
