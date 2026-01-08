@@ -9,6 +9,7 @@ import json
 
 plane_data = open('plane_data.txt')
 plane_spec = json.load(plane_data)
+plane_data.close()
 
 front_seats: float = plane_spec['Front seats']
 rear_seats: float = plane_spec['Rear seats']
@@ -51,4 +52,3 @@ if total_weight <= maximum_weight and is_CoG_Ok:
 else:
     print("The aircraft is too heavy to take off!")
 
-plane_data.close()
