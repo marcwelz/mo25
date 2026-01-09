@@ -25,15 +25,7 @@ utilization_of_phases: list[int]
 # -------- Functions --------
 
 def determining_traffic_performance_volume_per_phase(phases: list[list[str]]) -> list[int]:
-    determined_traffic_volume: list[int] = []
-    for phase in phases:
-        tmp_arr_traffic_per_phase: list[int] = []
-        for knot in phase:
-            tmp_arr_traffic_per_phase.append(utilization_of_knots[knot])
-
-        determined_traffic_volume.append(max(tmp_arr_traffic_per_phase))
-
-    return determined_traffic_volume
+    return [max(utilization_of_knots[knot] for knot in phase) for phase in phases]
 
 def calculate_phase_greentime(_total_utilization: int, _total_available_greentime: float, _utilization_of_phases: list[int]) -> list[float]:
     exact = [q / _total_utilization * _total_available_greentime for q in _utilization_of_phases]
@@ -47,11 +39,7 @@ def calculate_phase_greentime(_total_utilization: int, _total_available_greentim
 
 
 def calculate_possible_utilization_of_phases(_utilization_of_phases: list[int], _total_cycles_in_one_h: float, _greentime_of_phases: list[float], _time_requirement_per_car: int) -> list[float]:
-    tmp_arr: list[float] = []
-    for index, current_phase in enumerate(_utilization_of_phases):
-        tmp_arr.append(_total_cycles_in_one_h * greentime_of_phases[index] / _time_requirement_per_car)
-
-    return tmp_arr
+    return [_total_cycles_in_one_h * greentime_of_phases[index] / _time_requirement_per_car for index, _ in enumerate(_utilization_of_phases)]
 
 def calculate_total_utilization_of_phases(_utilization_of_knots: dict[str, int], _declaired_phases: list[list[str]], _possible_utilization_of_phases: list[float]) -> list[float]:
     tmp_arr: list[float] = []
