@@ -10,6 +10,7 @@ Created on 08.01.2026 11:44
 # enter your values below
 
 intermediate_time_per_phase_change: int = 6 #seconds
+minimum_greentime: int = 6 # seconds
 total_cycle_time: int = 45 #seconds
 time_requirement_per_car: int = 2 #seconds
 utilization_of_knots: dict[str, int] = {'K1': 400, 'K2': 200, 'K3': 250, 'K4': 420} #traffic per hour
@@ -17,7 +18,7 @@ declaired_phases: list[list[str]] = [['K1', 'K4'], ['K2'], ['K3']] #declaration 
 
 # -------- Variables --------
 
-greentime_of_phases: list[float] #max traffix per hour
+greentime_of_phases: list[int] #max traffix per hour
 possible_utilization_of_phases: list[float] #max traffix per hour
 total_utilization_of_phases: list[float] #in %
 utilization_of_phases: list[int]
@@ -27,7 +28,7 @@ utilization_of_phases: list[int]
 def determining_traffic_performance_volume_per_phase(phases: list[list[str]]) -> list[int]:
     return [max(utilization_of_knots[knot] for knot in phase) for phase in phases]
 
-def calculate_phase_greentime(_total_utilization: int, _total_available_greentime: float, _utilization_of_phases: list[int]) -> list[float]:
+def calculate_phase_greentime(_total_utilization: int, _total_available_greentime: float, _utilization_of_phases: list[int]) -> list[int]:
     exact = [q / _total_utilization * _total_available_greentime for q in _utilization_of_phases]
     green_int = [int(x) for x in exact]
     missing = int(_total_available_greentime) - sum(green_int)
@@ -60,8 +61,15 @@ greentime_of_phases = calculate_phase_greentime(total_utilization, total_availab
 possible_utilization_of_phases = calculate_possible_utilization_of_phases(utilization_of_phases, total_cycles_in_one_h, greentime_of_phases, time_requirement_per_car)
 total_utilization_of_phases = calculate_total_utilization_of_phases(utilization_of_knots, declaired_phases, possible_utilization_of_phases)
 
+# -------- Checks --------
+
 if not int(sum(greentime_of_phases)) == int(total_available_greentime):
-    print('greentime of phases do not math with available greentime')
+    print('\033[31m[ERROR] greentime of phases do not match with available greentime\033[0m')
+
+for index, greentime_of_phase in enumerate(greentime_of_phases):
+    if greentime_of_phase <= minimum_greentime:
+        print(f'\033[33m[WARNING]\033[0m greentime of {index + 1}. phase ({greentime_of_phase} seconds) '
+              f'is less or equal than the minimum greentime of {minimum_greentime} seconds')
 
 # display table (source chatgpt)
 # can be ignored
