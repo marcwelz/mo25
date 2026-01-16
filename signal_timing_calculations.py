@@ -67,9 +67,9 @@ if not int(sum(greentime_of_phases)) == int(total_available_greentime):
     print('\033[31m[ERROR] greentime of phases do not match with available greentime\033[0m')
 
 for index, greentime_of_phase in enumerate(greentime_of_phases):
-    if greentime_of_phase <= minimum_greentime:
+    if greentime_of_phase < minimum_greentime:
         print(f'\033[33m[WARNING]\033[0m greentime of {index + 1}. phase ({greentime_of_phase} seconds) '
-              f'is less or equal than the minimum greentime of {minimum_greentime} seconds')
+              f'is less than the minimum greentime of {minimum_greentime} seconds')
 
 # display table (source chatgpt)
 # can be ignored
