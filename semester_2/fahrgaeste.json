@@ -1,0 +1,7 @@
+[
+  {"name": "Anna", "linie": "10", "haltestelle": "HB", "wartezeit": 3},
+  {"name": "Ben", "linie": "10", "haltestelle": "HB", "wartezeit": 5},
+  {"name": "Clara", "linie": "12", "haltestelle": "Central", "wartezeit": 2},
+  {"name": "David", "linie": "10", "haltestelle": "HB", "wartezeit": 7},
+  {"name": "Eva", "linie": "12", "haltestelle": "Central", "wartezeit": 4}
+]
