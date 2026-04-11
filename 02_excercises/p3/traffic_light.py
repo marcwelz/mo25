@@ -8,7 +8,19 @@ Created on 06.04.2026 21:53
 
 import time
 import threading
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
+STAGES: dict[int, str] = {
+    0: "green",
+    1: "yellow",
+    2: "red",
+}
+
+PHASE_DURATION: dict[str, int] = {
+    "green": 5,
+    "yellow": 2,
+    "red": 6,
+}
 
 @dataclass
 class Signal:
@@ -23,48 +35,63 @@ class SignalHead(Signal):
         print(self.current_color)
 
 @dataclass
-class SignalCountdown(Signal):
-    def interstage(self, from_stage: str, to_stage: str) -> None:
-        print(f"  Phasenwechsel: {from_stage} → {to_stage}")
-        self.current_color = to_stage
+class SignalGroup(Signal):
+    _stage: int = field(default=0, init=False)
+    _ticks_in_stage: int = field(default=0, init=False)
 
-    def _simulate(self) -> None:
-        past_phase_ticks: int = 0
-        while True:
-            if self.current_color == "green":
-                print(f"green:  {self.green_phase - past_phase_ticks} sec remaining")
-                if self.green_phase <= past_phase_ticks:
-                    self.interstage("green", "yellow")
-                    past_phase_ticks = 0
-            elif self.current_color == "yellow":
-                print(f"yellow: {self.yellow_phase - past_phase_ticks} sec remaining")
-                if self.yellow_phase <= past_phase_ticks:
-                    self.interstage("yellow", "red")
-                    past_phase_ticks = 0
-            elif self.current_color == "red":
-                print(f"red:    {self.red_phase - past_phase_ticks} sec remaining")
-                if self.red_phase <= past_phase_ticks:
-                    self.interstage("red", "green")
-                    past_phase_ticks = 0
-            past_phase_ticks += 1
+    def current_stage(self) -> int:
+        return self._stage
+
+    def interstage(self, from_stage: int, to_stage: int) -> None:
+        print(f"  Phasenwechsel: Stage {from_stage} ({STAGES[from_stage]}) → Stage {to_stage} ({STAGES[to_stage]})")
+        self._stage = to_stage
+        self.current_color = STAGES[to_stage]
+        self._ticks_in_stage = 0
+
+    def update(self, t: int) -> None:
+        color: str = STAGES[self._stage]
+        duration: int = PHASE_DURATION[color]
+        remaining: int = duration - self._ticks_in_stage
+        print(f"  t={t:03d} | Stage {self._stage} ({color}) | {remaining} sec remaining")
+
+        if self._ticks_in_stage >= duration:
+            next_stage: int = (self._stage + 1) % len(STAGES)
+            self.interstage(self._stage, next_stage)
+        else:
+            self._ticks_in_stage += 1
+
+@dataclass
+class Simulation:
+    signal_group: SignalGroup
+    duration: int = 60
+
+    def _run(self) -> None:
+        for t in range(self.duration):
+            self.signal_group.update(t)
             time.sleep(1)
+        print("Simulation beendet.")
 
     def _user_input(self) -> None:
-        valid_phases: list[str] = ["green", "yellow", "red"]
         while True:
-            new_phase: str = input("Neue Phase eingeben (green/yellow/red): ").strip().lower()
-            if new_phase in valid_phases:
-                self.interstage(self.current_color, new_phase)
-            else:
-                print(f"  Ungültige Phase: '{new_phase}'")
+            raw: str = input("Neue Phasennummer eingeben (0=green, 1=yellow, 2=red): ").strip()
+            try:
+                new_stage: int = int(raw)
+                if new_stage in STAGES:
+                    self.signal_group.interstage(self.signal_group.current_stage(), new_stage)
+                else:
+                    print(f"  Ungültige Stage: {new_stage}. Gültig: {list(STAGES.keys())}")
+            except ValueError:
+                print("  Bitte eine Zahl eingeben.")
 
     def activate(self) -> None:
-        t_sim: threading.Thread = threading.Thread(target=self._simulate, daemon=True)
+        t_sim: threading.Thread = threading.Thread(target=self._run)
         t_input: threading.Thread = threading.Thread(target=self._user_input, daemon=True)
         t_sim.start()
         t_input.start()
         t_sim.join()
 
 
-signal: SignalCountdown = SignalCountdown("green", green_phase=5, red_phase=6, yellow_phase=2)
-signal.activate()
+if __name__ == "__main__":
+    group: SignalGroup = SignalGroup(current_color="green", green_phase=5, red_phase=6, yellow_phase=2)
+    sim: Simulation = Simulation(signal_group=group, duration=60)
+    sim.activate()

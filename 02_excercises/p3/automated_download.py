@@ -13,7 +13,7 @@ from pathlib import Path
 # Config
 URL: str = "https://transport.data.gouv.fr/resources/79165/download"
 SAVE_DIR: Path = Path("downloaded_files")
-INTERVAL_SECONDS: int = 360
+INTERVAL_SECONDS: int = 5 # 6 minutes
 TOTAL_DOWNLOADS: int = 50
 
 ssl_context: ssl.SSLContext = ssl.create_default_context()
