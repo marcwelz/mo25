@@ -10,10 +10,29 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Optional
 
+# CONFIG
+
 LOAN_DAYS_BOOKS: int = 28 #days
 LOAN_DAYS_DVD: int = 7 #days
 LOAN_DAYS_MAGAZINE: int = 14 #days
 
+BIB_CONFIG: dict = {
+    "library_name": "City Library",
+    "members": [
+        {"name": "Alice", "member_id": 101},
+        {"name": "Bob", "member_id": 102},
+        {"name": "Charlie", "member_id": 103},
+    ],
+    "media": [
+        {"type": "Book", "title": "Clean Code", "media_id": 1},
+        {"type": "Book", "title": "The Pragmatic Programmer", "media_id": 2},
+        {"type": "Book", "title": "Design Patterns", "media_id": 3},
+        {"type": "DVD", "title": "Inception", "media_id": 4},
+        {"type": "DVD", "title": "Interstellar", "media_id": 5},
+        {"type": "Magazine", "title": "Tech Monthly", "media_id": 6},
+        {"type": "Magazine", "title": "Science Weekly", "media_id": 7},
+    ],
+}
 
 @dataclass
 class Media:
@@ -193,56 +212,53 @@ class Library:
         if not reminder_sent:
             print("  No reminders needed.")
 
+
+def init_library(config: dict) -> "Library":
+    lib: Library = Library(name=config["library_name"])
+
+    print(f"\n  Create '{lib.name}'...")
+    for m in config["members"]:
+        lib.register_member(Member(name=m["name"], member_id=m["member_id"]))
+
+    for item in config["media"]:
+        media_class: type = MEDIA_TYPE_MAP[item["type"].lower()]
+        lib.add_media(media_class(title=item["title"], media_id=item["media_id"]))
+
+    return lib
+
+
+MEDIA_TYPE_MAP: dict[str, type] = {
+    "book": Book,
+    "dvd": DVD,
+    "magazine": Magazine,
+}
+
 if __name__ == "__main__":
-    print("=" * 55)
-    print("  Library Management System")
-    print("=" * 55)
+    lib: Library = init_library(BIB_CONFIG)
 
-    lib: Library = Library(name="City Library")
+    print("\n[1] Borrowing media:")
+    lib.borrow_media(101, 1)
+    lib.borrow_media(101, 4)
+    lib.borrow_media(101, 6)
 
-    # --- Add media ---
-    print("\n[1] Adding media to catalog:")
-    lib.add_media(Book(title="Clean Code", media_id=1))
-    lib.add_media(Book(title="The Pragmatic Programmer", media_id=2))
-    lib.add_media(DVD(title="Inception", media_id=3))
-    lib.add_media(DVD(title="Interstellar", media_id=4))
-    lib.add_media(Magazine(title="Tech Monthly", media_id=5))
-    lib.add_media(Book(title="Design Patterns", media_id=6))
-
-    # --- Register members ---
-    print("\n[2] Registering members:")
-    lib.register_member(Member(name="Alice", member_id=101))
-    lib.register_member(Member(name="Bob", member_id=102))
-
-    # --- Borrow media ---
-    print("\n[3] Borrowing media:")
-    lib.borrow_media(101, 1)  # Alice borrows Book
-    lib.borrow_media(101, 3)  # Alice borrows DVD
-    lib.borrow_media(101, 5)  # Alice borrows Magazine
-
-    # Attempt 4th borrow – must raise Exception
-    print("\n[3b] Alice attempts to borrow a 4th item:")
+    print("\n[2] Alice attempts to borrow a 4th item:")
     try:
         lib.borrow_media(101, 2)
     except Exception as e:
         print(f"  ✗  Error caught: {e}")
 
-    # Bob borrows 2 items
-    print("\n[3c] Bob borrows:")
+    print("\n[3] Bob borrows:")
     lib.borrow_media(102, 2)
-    lib.borrow_media(102, 4)
+    lib.borrow_media(102, 5)
 
-    # --- Check status ---
     print("\n[4] Media status check:")
-    for media_id in [1, 2, 3, 4, 5, 6]:
-        lib.get_media_status(media_id)
+    for m in lib.media_catalog:
+        lib.get_media_status(m.media_id)
 
-    # --- Return media ---
     print("\n[5] Returning media:")
-    lib.return_media(101, 3)  # Alice returns DVD
-    lib.get_media_status(3)  # Should now be available
+    lib.return_media(101, 4)
+    lib.get_media_status(4)
 
-    # --- Duplicate media / member registration (error handling) ---
     print("\n[6] Duplicate registration tests:")
     try:
         lib.add_media(Book(title="Duplicate Book", media_id=1))
@@ -254,17 +270,14 @@ if __name__ == "__main__":
     except AssertionError as e:
         print(f"  ✗  AssertionError: {e}")
 
-    # --- Overdue reminder simulation ---
-    # Borrow with a past date so the item is already overdue
     print("\n[7] Simulating overdue items:")
     lib.borrow_media(
-        member_id=102,
-        media_id=6,
-        borrow_date=date(2025, 1, 1),  # way in the past
+        member_id=103,
+        media_id=3,
+        borrow_date=date(2025, 1, 1),
     )
     lib.check_reminders(check_date=date.today())
 
-    # --- Search ---
     print("\n[8] Search for 'code':")
     results: list[Media] = lib.search_by_title("code")
     for r in results:

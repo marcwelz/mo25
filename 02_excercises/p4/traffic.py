@@ -36,10 +36,14 @@ def avg_delay_per_type(df: pd.DataFrame) -> pd.Series:
 
 def filter_high_delay_lines(df: pd.DataFrame, threshold_min: float = 5.0) -> pd.DataFrame:
     assert threshold_min >= 0, "Threshold must be a non-negative number."
-    avg_delay_per_line: pd.Series = df.groupby("Linie")["Verspätung_min"].mean()
-    high_delay_lines: pd.Index = avg_delay_per_line[avg_delay_per_line > threshold_min].index
-    filtered_df: pd.DataFrame = df[df["Linie"].isin(high_delay_lines)].copy()
-    return filtered_df
+
+    avg_delay_per_line: pd.Series = df.groupby("Linie")["Verspätung_min"].mean().round(2)
+    high_delay_lines: pd.Series = avg_delay_per_line[avg_delay_per_line > threshold_min]
+
+    result_df: pd.DataFrame = high_delay_lines.reset_index()
+    result_df.columns = pd.Index(["Linie", "Avg_Verspaetung_min"])
+
+    return result_df
 
 if __name__ == "__main__":
     print("=" * 55)
@@ -61,4 +65,4 @@ if __name__ == "__main__":
     if high_delay.empty:
         print("  No lines exceed the threshold.")
     else:
-        print(high_delay[["Linie", "Datum", "Verspätung_min"]].to_string(index=False))
+        print(high_delay[["Linie", "Avg_Verspaetung_min"]].to_string(index=False))
