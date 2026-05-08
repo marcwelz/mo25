@@ -16,6 +16,8 @@ LOAN_DAYS_BOOKS: int = 28 #days
 LOAN_DAYS_DVD: int = 7 #days
 LOAN_DAYS_MAGAZINE: int = 14 #days
 
+MAX_BORROW_PER_USER: int = 3
+
 BIB_CONFIG: dict = {
     "library_name": "City Library",
     "members": [
@@ -31,6 +33,7 @@ BIB_CONFIG: dict = {
         {"type": "DVD", "title": "Interstellar", "media_id": 5},
         {"type": "Magazine", "title": "Tech Monthly", "media_id": 6},
         {"type": "Magazine", "title": "Science Weekly", "media_id": 7},
+        {"type": "Magazine", "title": "Science Daily", "media_id": 8},
     ],
 }
 
@@ -98,15 +101,15 @@ class Member:
     name: str
     member_id: int
     borrowed_media_ids: list[int] = field(default_factory=list)
-    _max_borrow: int = field(default=3, init=False, repr=False)
+    MAX_BORROW: int = MAX_BORROW_PER_USER
 
     def can_borrow(self) -> bool:
-        return len(self.borrowed_media_ids) < self._max_borrow
+        return len(self.borrowed_media_ids) < self.MAX_BORROW
 
     def add_borrowed(self, media_id: int) -> None:
         if not self.can_borrow():
             raise Exception(
-                f"Member '{self.name}' already has {self._max_borrow} items borrowed. "
+                f"Member '{self.name}' already has {self.MAX_BORROW} items borrowed. "
                 f"Return one before borrowing another."
             )
         self.borrowed_media_ids.append(media_id)
@@ -120,7 +123,7 @@ class Member:
     def info(self) -> str:
         return (
             f"Member '{self.name}' (ID {self.member_id}) – "
-            f"borrowed: {len(self.borrowed_media_ids)}/{self._max_borrow} items"
+            f"borrowed: {len(self.borrowed_media_ids)}/{self.MAX_BORROW} items"
         )
 
 @dataclass
