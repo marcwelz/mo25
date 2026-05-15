@@ -162,9 +162,9 @@ green_times: list[int] = calculator.compute_green_times(UTILIZATION_OF_KNOTS, KN
 print(calculator.report(UTILIZATION_OF_KNOTS, KNOT_PHASES).to_string(index=False))
 
 signal_phases: list[SignalPhase] = []
-for idx, sg_indices in enumerate(PHASE_DEFINITIONS):
+for index, sg_indices in enumerate(PHASE_DEFINITIONS):
     active: list[SignalGroup] = [groups[j] for j in sg_indices]
-    signal_phases.append(SignalPhase(f"P{idx + 1}", active, green_time=green_times[idx]))
+    signal_phases.append(SignalPhase(f"P{index + 1}", active, green_time=green_times[index]))
 
 v: intf.SumoInterface = intf.SumoInterface(SUMO_CONFIG)
 
