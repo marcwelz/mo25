@@ -34,6 +34,5 @@ class TestIsSavePassword(unittest.TestCase):
     def test_mit_leerzeichen(self):
         self.assertFalse(is_save_password("Passwo r1"))
 
-
 if __name__ == "__main__":
     unittest.main()
